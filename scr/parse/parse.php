@@ -1,7 +1,7 @@
 <?php
 require '/blop/scr/setup.php';
 require '/blop/scr/functions.php';
-require './simple_html_dom.php';
+require '/blop/scr/parse/simple_html_dom.php';
 require '/blop/scr/classes/Database.class.php';
 
 login('http://www.empornium.me/login.php');
@@ -17,8 +17,21 @@ file_put_contents(PARSED_PAGE_TEMP_PATH, $str);
 $dom = file_get_html(PARSED_PAGE_TEMP_PATH);
 $rows = $dom->find('tr[class*="torrent row"]');
 
-echo count($rows);
-echo "\n";
+//Setting nuber of downloaded torrents
+$rows = array_slice($rows, 0,  NUM_TORRENTS);
+
+
+/*===============================================================================================*
+ *																Get images from rows 
+/*===============================================================================================*/
+$dom2 = new simple_html_dom();
+$img = array();
+foreach($rows as $row){
+ 	$parce_result = $row->find('script')[0]->innertext;
+	$parse_result = preg_replace('/\\\/i', '', $parce_result);
+	$dom2->load($parse_result);
+	$img[] = $dom2->find('img')[0]->src;
+}
 
 /*===============================================================================================*
  *																Get file sizes inside the rows
@@ -82,6 +95,16 @@ foreach($titles as $filename){
 
 
 /*===============================================================================================*
+ *														Download images	
+/*===============================================================================================*/
+
+$img_filenames = preg_replace('/\.torrent/', '', $filenames);
+$covers = downloadImages($img, $img_filenames);
+//var_dump($img_filenames);
+var_dump($covers);
+
+
+/*===============================================================================================*
  *															Download torrent file	
 /*===============================================================================================*/
 
@@ -100,7 +123,7 @@ foreach($torrents as $path){
 
 $db = new Database\Database('sitecontent', 'root', 'qxwv35azsc');
 
-for($i=0; $i<count($md5)-1; $i++){
+for($i=0; $i<count($md5); $i++){
 	
 	$db->appendTo('torrents', array('title'			=>	$titles[$i],
 																	'tags'			=>	$tags[$i], 

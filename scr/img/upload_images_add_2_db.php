@@ -12,7 +12,7 @@ $img_small = new Folder\Folder('/blop/upl/img_small/');
 
 //Upload large screenshots
 $curl_img = $img_large->as_post_fields_curl_array();
-$curl_img['scr_size'] = 'large';
+$curl_img['scr_size'] = 'img_large';
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_POST, true);
@@ -29,7 +29,7 @@ $img_large_resp = json_decode(curl_exec($ch));
 
 //Upload small screenshots
 $curl_img = $img_small->as_post_fields_curl_array();
-$curl_img['scr_size'] = 'small';
+$curl_img['scr_size'] = 'img_small';
 curl_setopt($ch, CURLOPT_POSTFIELDS, $curl_img);
 
 echo "Uploading small screenshots\n";

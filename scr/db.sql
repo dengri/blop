@@ -16,34 +16,27 @@ PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 */
 /*INSERT INTO `products` (`sku`,`name`,`img`,`price`,`paypal`) VALUES(NULL, 'Logo shirt, Blue', 'img\logo-shirt-blue.jpg', '12.07', '1451345345');*/
+
+/*DROP TABLE `videos`;
+*/
 /*
-DROP TABLE `videos`;
 CREATE TABLE IF NOT EXISTs `videos`(
 `id` int(11) AUTO_INCREMENT NOT NULL,
 `torrent_id` int(11) DEFAULT NULL,
 `video` varchar(225) DEFAULT NULL,
 PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
-
 */
-select distinct 
-				t.title, 
-				t.tags, 
-				l.url, 
-				s.url, 
-				m.info, 
-				k.video_url 
-				from img_large as l, 
-						 img_small as s, 
-						 torrents as t, 
-						 videos as v, 
-						 mediainfo as m,
-						 video_urls as k 
-				where v.id = l.video_id 
-				and v.id = s.video_id 
-				and v.id = m.video_id 
-				and t.id = v.torrent_id
-				and k.torrent_id = t.id\G
+
+/*
+drop table if exists minfo_temp;
+create temporary table minfo_temp select v.torrent_id, group_concat(m.info separator '\n') as minfo from videos as v left join mediainfo as m on v.id = m.video_id group by v.torrent_id;
+*/
+/*select * from minfo_temp;*/
+/*
+select torrents.title, torrents.tags, img_large.url, minfo_temp.minfo, img_small.url, group_concat(distinct video_urls.video_url order by substring_index(video_urls.video_url, '.', -2) separator '\n') as k2s from video_urls, torrents, img_large, img_small, videos, minfo_temp where video_urls.torrent_id = torrents.id and img_large.video_id = videos.id and img_small.video_id = videos.id and minfo_temp.torrent_id = torrents.id group by video_urls.torrent_id\G
+*/
+
 /*
 DROP TABLE `images`;
 CREATE TABLE IF NOT EXISTS `img_large`(
@@ -68,11 +61,14 @@ CREATE TABLE IF NOT EXISTS `mediainfo`(
 PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
-
+DROP TABLE IF EXISTS `video_urls`;
 CREATE TABLE IF NOT EXISTS `video_urls`(
 `id` int(11) AUTO_INCREMENT NOT NULL,
 `torrent_id` int(11) DEFAULT NULL,
+`video_id` int(11) DEFAULT NULL,
 `video_url` varchar(225) DEFAULT NULL,
 PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
+
 */
+

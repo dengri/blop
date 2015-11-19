@@ -94,9 +94,9 @@ function download_torrents($urls, $filenames){
 	$c = 0;
 
 	$torr_path = [];
-
+	progress_recet();
 	foreach($urls as $url){
-
+		progress('Download torrents', '#');
 		$url = htmlspecialchars_decode($url);
 
 		$dl_path = TORRENTS_PATH . $filenames[$c];
@@ -120,10 +120,68 @@ function download_torrents($urls, $filenames){
 
 		$c++;
 	}
+	echo "\n";
 	return $torr_path;
 }
 
 
+function progress($message, $delimiter){
+	static $p;
+	if(empty($p))echo "$message\n";
+	$p.=$delimiter;
+	echo "\r$p";
+}
+
+
+function progress_recet(){
+	unset($p);
+}
+
+
+function downloadImages($imgs, $names = NULL){
+	
+	$c = 0;
+	$img_path = [];
+
+	foreach($imgs as $img){
+		
+		progress('Downloading images for covers:', '#');
+
+		$img = htmlspecialchars_decode($img);
+		
+		if(isset($names[$c])){
+				$dl_path = PARSED_IMG_PATH . $names[$c] . '.' . pathinfo($img, PATHINFO_EXTENSION);
+		}else{
+				$dl_path = PARSED_IMG_PATH . basename($img);
+		}
+
+		$res = fopen($dl_path, "w+");
+
+		$ch = curl_init();
+
+		curl_setopt($ch, CURLOPT_URL, $img);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_FILE, $res);
+		curl_setopt($ch, CURLOPT_COOKIEFILE, COOKIEJAR_TEMP_PATH);
+
+		$buf = curl_exec($ch);
+		curl_close($ch);
+
+		fclose($res);
+
+		$c++;
+	}
+
+	echo "\n";
+	return get_dir_as_array(PARSED_IMG_PATH);
+}
+
+
+
+function get_dir_as_array($path){
+	return array_diff(scandir($path), array('.', '..'));
+}
 
 
 

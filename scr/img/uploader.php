@@ -5,7 +5,7 @@ define ('UPLOAD_PATH', '/wp-content/uploads/jav/');
 
 $upload_path = dirname(__FILE__) . UPLOAD_PATH;
 
-$screens_dir = $_POST['scr_size'] == 'large' ? 'img_large/' : 'img_small/';
+$screens_dir = $_POST['scr_size'];
 
 $upload_path .= $screens_dir;
 
