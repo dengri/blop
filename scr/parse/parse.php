@@ -97,11 +97,8 @@ foreach($titles as $filename){
 /*===============================================================================================*
  *														Download images	
 /*===============================================================================================*/
-
 $img_filenames = preg_replace('/\.torrent/', '', $filenames);
 $covers = downloadImages($img, $img_filenames);
-//var_dump($img_filenames);
-var_dump($covers);
 
 
 /*===============================================================================================*
@@ -111,9 +108,6 @@ var_dump($covers);
 $torrents = download_torrents($urls, $filenames);
 
 $md5 = array();
-
-
-
 
 foreach($torrents as $path){
 	$md5[] = hash_file('md5', $path);

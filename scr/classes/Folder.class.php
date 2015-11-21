@@ -24,12 +24,14 @@ class Folder{
 
 		$dir_array = array();
 	
-		while (($file = readdir($handle)) !== false) if ($file!='.' && $file!='..') $dir_array[]=$path.$file;
+		while (($file = readdir($handle)) !== false) if ($file!='.' && $file!='..' && $file!='.gitignore') $dir_array[]=$path.$file;
 		
 		closedir($handle);
 		
 		return $dir_array;
 	}
+
+
 
 //$array['file_name']	=> 'file_path'
 	function as_assoc_array (){

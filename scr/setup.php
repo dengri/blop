@@ -1,6 +1,6 @@
 <?php
 
-define('NUM_TORRENTS', 50);
+define('NUM_TORRENTS', 5);
 define('TORRENTS_PATH', '/blop/tor/');
 define('PARSED_IMG_PATH', '/blop/upl/img_cov/');
 define('VIDEOS_SRC_PATH', '/blop/vids/');

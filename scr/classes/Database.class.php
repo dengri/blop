@@ -73,6 +73,21 @@ class Database{
 
 
 
+	function updateDB($table_name, $fields){
+		\extract($fields);
+
+		switch($table_name){
+			case 'torrents':	
+				$condition = \pathinfo($cover, \PATHINFO_FILENAME);
+				$qstring = "UPDATE torrents SET cover='$cover' WHERE file_name LIKE '$condition%'";
+			break;
+		}
+		return $this->con->exec($qstring);
+	}
+
+
+
+
 	function getUploadedData(){
 			
 
@@ -105,11 +120,6 @@ class Database{
 											LEFT JOIN data_per_video AS dpv 
 												ON t.id = dpv.torrent_id
 											GROUP BY dpv.torrent_id";
-
-
-
-
-
 
 
 

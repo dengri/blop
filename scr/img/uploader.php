@@ -2,27 +2,33 @@
 define ('DOMAIN_NAME', 'javdeluxe.com');
 define ('UPLOAD_PATH', '/wp-content/uploads/jav/');
 
-
+//Set path to the folder where all image files are uploaded
+// parent folder of this script + UPLOAD_PATH constant 
 $upload_path = dirname(__FILE__) . UPLOAD_PATH;
 
-$screens_dir = $_POST['scr_size'];
+//Set needed folder in the upload path
+$screens_dir = $_POST['path'] . '/';
 
+//Set full path for current upload folder
 $upload_path .= $screens_dir;
 
-$img_urls = array();
+	//path to the uploaded temporary source file
+	$temp_path = $_FILES['cover']['tmp_name'];
 
-foreach($_FILES as $file){
-	$temp_path = $file['tmp_name'];
-	$dest_path = $upload_path . $file['name'];
 
+	//path to the destination file
+	$dest_path = $upload_path . $_FILES['cover']['name'];
+
+
+	$img_urls = array();
 	if (move_uploaded_file($temp_path, $dest_path)){
-
-		$img_urls[] = 'http://' . basename( dirname(__FILE__) ) . UPLOAD_PATH . $screens_dir . $file['name'];
-
+		
+		//Create URL for uploaded image
+		$img_urls[] = 'http://' . basename( dirname(__FILE__) ) . UPLOAD_PATH . $screens_dir . $_FILES['cover']['name'];
 
 	}else{
-		echo "======== Error! File {$file['name']} hasen't been uploade! ========\n";	
+		$img_urls[] = "Error!";
 	}
-}
 
 echo json_encode($img_urls);
+
