@@ -2,6 +2,7 @@
 include "/blop/scr/classes/k2sUpload.class.php";
 include "/blop/scr/classes/Folder.class.php";
 include "/blop/scr/classes/Database.class.php";
+include "/blop/scr/functions.php";
 
 use Database\Database;
 
@@ -18,7 +19,7 @@ $db = new Database('sitecontent', 'root', 'qxwv35azsc');
 //============================================================================//
 //									Get upladed files info
 //============================================================================//
-$upl->uploadFolder['id'] = '998f039024d67';
+$upl->uploadFolder['id'] = 'f0b8d3dd30ff1';
 $files_multydim_array = $upl->getFilesList($upl->uploadFolder['id'], 1000, 0, ['name' => 1], 'any')['files'];
 
 //============================================================================//

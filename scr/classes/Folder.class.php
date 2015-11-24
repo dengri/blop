@@ -8,11 +8,14 @@ class Folder{
 	}
 	
 
-
 	function set_path($path){
 		$this->path = $path;
 	}
 	
+
+	function getPath(){
+		return $this->path;
+	}
 
 
 	function as_array($full_path = false){
@@ -56,6 +59,7 @@ class Folder{
 	
 		return $dir_array;
 	}
+
 
 //Returns an array ready to cUrl upload
 	function as_post_fields_curl_array(){

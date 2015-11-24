@@ -5,7 +5,7 @@ use Database\Database;
 $db =new Database('sitecontent', 'root', 'qxwv35azsc');
 
 $data = $db->getUploadedData();
-
+/*
 foreach($data as $d){
 	$title = $d['title'];
 	$tags = $d['tags'];
@@ -55,6 +55,6 @@ foreach($data as $d){
 
 	echo $title . "\n" . $tags . "\n" .$img_large . "\n" .$img_small . "\n" .$mediainfo . "\n" .$url . "\n\n\n";
 }
-
-//var_dump($data);
+*/
+var_dump($data);
 

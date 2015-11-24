@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 
 function login($url){
 
@@ -94,9 +93,11 @@ function download_torrents($urls, $filenames){
 	$c = 0;
 
 	$torr_path = [];
-	progress_recet();
+
 	foreach($urls as $url){
+
 		progress('Download torrents', '#');
+
 		$url = htmlspecialchars_decode($url);
 
 		$dl_path = TORRENTS_PATH . $filenames[$c];
@@ -117,24 +118,35 @@ function download_torrents($urls, $filenames){
 		fclose($res);
 
 		$torr_path[] = $dl_path;	
+		
+		copy($dl_path, WATCH_PATH . $filenames[$c] );
 
 		$c++;
 	}
-	echo "\n";
+
+	progress_recet();	
+
 	return $torr_path;
 }
 
 
-function progress($message, $delimiter){
-	static $p;
-	if(empty($p))echo "$message\n";
-	$p.=$delimiter;
-	echo "\r$p";
+
+function progress( $message, $delimiter ){
+
+	global $glob_reset_progress;
+	
+	if($glob_reset_progress) {
+		echo $message . "\n";
+		$glob_reset_progress = false;
+	}
+	echo $delimiter;
 }
 
 
 function progress_recet(){
-	unset($p);
+	global $glob_reset_progress;
+	$glob_reset_progress = true;
+	echo "\n";
 }
 
 
@@ -173,6 +185,7 @@ function downloadImages($imgs, $names = NULL){
 		$c++;
 	}
 
+	progress_recet();
 	echo "\n";
 	return get_dir_as_array(PARSED_IMG_PATH);
 }
@@ -212,6 +225,7 @@ function save_torrent_files($title, $tags, $url, $file_size){
  	$tags = preg_replace('/ /', ', ', $tags);
  	$tags = preg_replace('/\./', ' ', $tags);
 
+
  	$url = htmlspecialchars_decode($url);
  	save_torrent($url, $filename);
 
@@ -234,4 +248,29 @@ function save_parsed_to_db($row){
 function get_md5_from_filename($filename){
 	return substr($filename, 0, 31);
 }
+
+
+function upload_images($source, $dest){
+
+	$images = array();
+
+	$ch = curl_init();
+
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_URL, IMG_UPLOADER_PATH);
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	
+	foreach($source as $img){
+	
+		progress("Uploading images and adding info to DB:", '#');
+	
+		curl_setopt($ch, CURLOPT_POSTFIELDS, array('cover' => $img, 'path' => $dest));
+		$images[] = json_decode(curl_exec($ch));
+	}
+	
+	curl_close($ch);
+	return $images;
+}
+
 

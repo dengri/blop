@@ -20,29 +20,27 @@
 #
 #/blop/scr/img/mtn -i -t -c 2 -r 3 -w 800 -O /blop/upl/img_large   /blop/upl/vids
 #/blop/scr/img/mtn -i -t -c 4 -r 16 -O /blop/upl/img_small /blop/upl/vids
-#
+
 ##upload images and add image-info to DB
 #echo "4. Uploading images\n";
-#php -f /blop/scr/img/upload_images_add_2_db.php
+#php -f /blop/scr/img/upload_covers.php
+#php -f /blop/scr/img/upload_img_large.php
+#php -f /blop/scr/img/upload_img_small.php
 #
-##Generate video info
+###Generate video info
 #echo "5. Generating video info\n";
 #mediainfo --Inform="file:///blop/scr/mediainfo/template.txt" /blop/upl/vids/* > /blop/upl/inf/filesinfo.txt
 #php -f /blop/scr/mediainfo/add_media_info_to_db.php
-#
-###Create blophives
-##echo "6. Creating blophives\n";
-##for i in *
-##	 do rar m -r- -m0 -v495000000b -sm500000000 -ximg -xinf -xrars "/blop/upl/rars/${i}" "$i";
-##done
-#
-#echo "6. Creating blophives\n";
+
+##Create blophives
+#cd /blop/upl/vids
+#echo "6. Creating archives\n";
 #for i in *
-#	 do rar m -r- -m0 -v2000000b -sm800000 -ximg -xinf -xrars "/blop/upl/rars/${i}" "$i";
+#	 do rar m -r- -m0 -v495000000b -sm500000000 -ximg -xinf -xrars "/blop/upl/rars/${i}" "$i";
 #done
-#echo "6. Preparing for upload, moving blophives\n";
+
 #mv /blop/upl/rars/* /blop/upl/vids/
-#
-echo "6. Uploading blophives\n";
+
+echo "6. Uploading archives\n";
 php -f /blop/scr/upload/upload.php
 

@@ -95,27 +95,37 @@ class Database{
 		$this->con->exec($qstring);
 
 		$qstring = "create temporary table video_parts_combined_temp
-										select torrent_id, video_id, 
-													 group_concat(video_url order by substring_index(video_url, '.', -2) separator '\n') as all_parts_urls
-										from video_urls group by video_id";
+										select distinct torrent_id, 
+																		video_id, 
+													 group_concat(DISTINCT video_url order by substring_index(video_url, '.', -2) separator '\n') as all_parts_urls
+													 from video_urls 
+													 WHERE video_url NOT LIKE '%gitignore' 
+													 group by video_id";
 		$this->con->exec($qstring);
+
 
 		$qstring = "CREATE TEMPORARY TABLE data_per_video
-									SELECT v.torrent_id, v.all_parts_urls AS `k2s_urls`, m.info AS `mediainfo`, il.url AS `img_large`, ism.url AS `img_small` 
+									SELECT DISTINCT v.torrent_id, 
+																	v.all_parts_urls AS `k2s_urls`, 
+												 					m.info AS `mediainfo`, 
+												 					il.url AS `img_large`, 
+												 					ism.url AS `img_small` 
 											FROM video_parts_combined_temp AS v 
-											LEFT JOIN mediainfo AS m 
-												ON v.video_id = m.video_id 
-											LEFT JOIN img_large AS il 
-												ON v.video_id = il.video_id
-											LEFT JOIN img_small AS ism
-												ON v.video_id = ism.video_id"; 
+																 LEFT JOIN mediainfo AS m 
+																 ON v.video_id = m.video_id 
+															   LEFT JOIN img_large AS il 
+																 ON v.video_id = il.video_id
+															 	 LEFT JOIN img_small AS ism
+														 		 ON v.video_id = ism.video_id"; 
 		$this->con->exec($qstring);
 
-		$qstring = "SELECT 	t.title, t.tags, 
-											 	GROUP_CONCAT(dpv.img_large SEPARATOR '\n') AS img_large, 
-											 	GROUP_CONCAT(dpv.img_small SEPARATOR '\n') AS img_small, 
-											 	GROUP_CONCAT(dpv.mediainfo SEPARATOR '\n') AS mediainfo, 
-											 	GROUP_CONCAT(dpv.k2s_urls SEPARATOR '\n')  AS k2s_urls 
+		$qstring = "SELECT DISTINCT	t.cover, 
+																t.title, 
+																t.tags, 
+											 					GROUP_CONCAT(DISTINCT dpv.img_large SEPARATOR '\n') AS img_large, 
+											 					GROUP_CONCAT(DISTINCT dpv.img_small SEPARATOR '\n') AS img_small, 
+											 					GROUP_CONCAT(DISTINCT dpv.mediainfo SEPARATOR '\n') AS mediainfo, 
+											 					GROUP_CONCAT(DISTINCT dpv.k2s_urls SEPARATOR '\n')  AS k2s_urls 
 											FROM torrents AS t
 											LEFT JOIN data_per_video AS dpv 
 												ON t.id = dpv.torrent_id
@@ -123,7 +133,7 @@ class Database{
 
 
 
-		//$qstring = "select * from data_per_video";
+//		$qstring = "select * from video_parts_combined_temp";
 		$result = $this->con->query($qstring);
 
 		return $result->fetchAll(\PDO::FETCH_ASSOC);
