@@ -162,9 +162,9 @@ function downloadImages($imgs, $names = NULL){
 		$img = htmlspecialchars_decode($img);
 		
 		if(isset($names[$c])){
-				$dl_path = PARSED_IMG_PATH . $names[$c] . '.' . pathinfo($img, PATHINFO_EXTENSION);
+				$dl_path = SITE_COVERS_PATH . $names[$c] . '.' . pathinfo($img, PATHINFO_EXTENSION);
 		}else{
-				$dl_path = PARSED_IMG_PATH . basename($img);
+				$dl_path = SITE_COVERS_PATH . basename($img);
 		}
 
 		$res = fopen($dl_path, "w+");
